@@ -1,1 +1,1 @@
-iperf-based scripts for Network Bandwidth tests
+iperf3-based scripts for Network Bandwidth tests
