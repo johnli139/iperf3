@@ -12,7 +12,7 @@ if [ $? -ne 0 ]; then
    exit 1
 fi
 # --------------------------------------------------------------------------------------------
-OUT="./iperf-basic.csv"
+OUT="./iperf-basic-$(ip link show eth0 | grep mtu  | awk -F" " '{ print $5 }').csv"
 if [ -f "$OUT" ]; then
    rm -f $OUT
 fi
@@ -54,6 +54,16 @@ iperf3 -c $1 -V -4 -t $TIME -O 1 -P 2 -f g -l 512 --logfile $FILE > /dev/null 2>
 echo $TEST";512"";2;"$(awk -F"]" '/SUM.*sender$/ { print $2 }' $FILE | awk -F" " '{ print $5 ";=" $7 "/(" $3 "*1024*1024*1024/131072);;" $3 ";" }') >> $OUT
 sleep $PAUSE
 # ---------------------------------------------------------------------------------------------
+TEST="TCP-512-3"
+echo Testing $TEST
+FILE="$DIR$TEST.txt"
+if [ -f "$FILE" ]; then
+   rm -f $FILE
+fi
+iperf3 -c $1 -V -4 -t $TIME -O 1 -P 3 -f g -l 512 --logfile $FILE > /dev/null 2>&1
+echo $TEST";512"";3;"$(awk -F"]" '/SUM.*sender$/ { print $2 }' $FILE | awk -F" " '{ print $5 ";=" $7 "/(" $3 "*1024*1024*1024/131072);;" $3 ";" }') >> $OUT
+sleep $PAUSE
+# ---------------------------------------------------------------------------------------------
 TEST="TCP-512-4"
 echo Testing $TEST
 FILE="$DIR$TEST.txt"
@@ -82,6 +92,16 @@ if [ -f "$FILE" ]; then
 fi
 iperf3 -c $1 -V -4 -t $TIME -O 1 -P 2 -f g -l 1448 --logfile $FILE > /dev/null 2>&1
 echo $TEST";1448"";2;"$(awk -F"]" '/SUM.*sender$/ { print $2 }' $FILE | awk -F" " '{ print $5 ";=" $7 "/(" $3 "*1024*1024*1024/131072);;" $3 ";" }') >> $OUT
+sleep $PAUSE
+# ---------------------------------------------------------------------------------------------
+TEST="TCP-1448-3"
+echo Testing $TEST
+FILE="$DIR$TEST.txt"
+if [ -f "$FILE" ]; then
+   rm -f $FILE
+fi
+iperf3 -c $1 -V -4 -t $TIME -O 1 -P 3 -f g -l 1448 --logfile $FILE > /dev/null 2>&1
+echo $TEST";1448"";3;"$(awk -F"]" '/SUM.*sender$/ { print $2 }' $FILE | awk -F" " '{ print $5 ";=" $7 "/(" $3 "*1024*1024*1024/131072);;" $3 ";" }') >> $OUT
 sleep $PAUSE
 # ---------------------------------------------------------------------------------------------
 TEST="TCP-1448-4"
@@ -114,6 +134,16 @@ iperf3 -c $1 -V -4 -t $TIME -O 1 -P 2 -f g -l 8192 --logfile $FILE > /dev/null 2
 echo $TEST";8192"";2;"$(awk -F"]" '/SUM.*sender$/ { print $2 }' $FILE | awk -F" " '{ print $5 ";=" $7 "/(" $3 "*1024*1024*1024/131072);;" $3 ";" }') >> $OUT
 sleep $PAUSE
 # ---------------------------------------------------------------------------------------------
+TEST="TCP-8K-3"
+echo Testing $TEST
+FILE="$DIR$TEST.txt"
+if [ -f "$FILE" ]; then
+   rm -f $FILE
+fi
+iperf3 -c $1 -V -4 -t $TIME -O 1 -P 3 -f g -l 8192 --logfile $FILE > /dev/null 2>&1
+echo $TEST";8192"";3;"$(awk -F"]" '/SUM.*sender$/ { print $2 }' $FILE | awk -F" " '{ print $5 ";=" $7 "/(" $3 "*1024*1024*1024/131072);;" $3 ";" }') >> $OUT
+sleep $PAUSE
+# ---------------------------------------------------------------------------------------------
 TEST="TCP-8K-4"
 echo Testing $TEST
 FILE="$DIR$TEST.txt"
@@ -142,6 +172,16 @@ if [ -f "$FILE" ]; then
 fi
 iperf3 -c $1 -V -4 -t $TIME -O 1 -P 2 -f g -l 65500 --logfile $FILE > /dev/null 2>&1
 echo $TEST";65500"";2;"$(awk -F"]" '/SUM.*sender$/ { print $2 }' $FILE | awk -F" " '{ print $5 ";=" $7 "/(" $3 "*1024*1024*1024/131072);;" $3 ";" }') >> $OUT
+sleep $PAUSE
+# ---------------------------------------------------------------------------------------------
+TEST="TCP-64K-3"
+echo Testing $TEST
+FILE="$DIR$TEST.txt"
+if [ -f "$FILE" ]; then
+   rm -f $FILE
+fi
+iperf3 -c $1 -V -4 -t $TIME -O 1 -P 3 -f g -l 65500 --logfile $FILE > /dev/null 2>&1
+echo $TEST";65500"";3;"$(awk -F"]" '/SUM.*sender$/ { print $2 }' $FILE | awk -F" " '{ print $5 ";=" $7 "/(" $3 "*1024*1024*1024/131072);;" $3 ";" }') >> $OUT
 sleep $PAUSE
 # ---------------------------------------------------------------------------------------------
 TEST="TCP-64K-4"
@@ -183,6 +223,16 @@ iperf3 -c $1 -u -b 100G -V -4 -t $TIME -O 1 -P 2 -f g -l 512 --logfile $FILE > /
 echo $TEST";512;2;"$(awk -F"]" '/SUM.*ms / { print $2 }' $FILE | awk -F" " '{ print $5 ";" "="$9 ";" $7 ";" $3 ";" }') >> $OUT
 sleep $PAUSE
 # ----------------------------------------------------------------------------------------------
+TEST="UDP-512-3"
+echo Testing $TEST
+FILE="$DIR$TEST.txt"
+if [ -f "$FILE" ]; then
+   rm -f $FILE
+fi
+iperf3 -c $1 -u -b 100G -V -4 -t $TIME -O 1 -P 3 -f g -l 512 --logfile $FILE > /dev/null 2>&1
+echo $TEST";512;3;"$(awk -F"]" '/SUM.*ms / { print $2 }' $FILE | awk -F" " '{ print $5 ";" "="$9 ";" $7 ";" $3 ";" }') >> $OUT
+sleep $PAUSE
+# ----------------------------------------------------------------------------------------------
 TEST="UDP-512-4"
 echo Testing $TEST
 FILE="$DIR$TEST.txt"
@@ -212,6 +262,17 @@ fi
 iperf3 -c $1 -u -b 100G -V -4 -t $TIME -O 1 -P 2 -f g -l 1448 --logfile $FILE > /dev/null 2>&1
 echo $TEST";1448;2;"$(awk -F"]" '/SUM.*ms / { print $2 }' $FILE | awk -F" " '{ print $5 ";" "="$9 ";" $7 ";" $3 ";" }') >> $OUT
 sleep $PAUSE
+# ----------------------------------------------------------------------------------------------
+TEST="UDP-1448-3"
+echo Testing $TEST
+FILE="$DIR$TEST.txt"
+if [ -f "$FILE" ]; then
+   rm -f $FILE
+fi
+iperf3 -c $1 -u -b 100G -V -4 -t $TIME -O 1 -P 3 -f g -l 1448 --logfile $FILE > /dev/null 2>&1
+echo $TEST";1448;3;"$(awk -F"]" '/SUM.*ms / { print $2 }' $FILE | awk -F" " '{ print $5 ";" "="$9 ";" $7 ";" $3 ";" }') >> $OUT
+sleep $PAUSE
+# ----------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------
 TEST="UDP-1448-4"
 echo Testing $TEST
@@ -243,6 +304,17 @@ iperf3 -c $1 -u -b 100G -V -4 -t $TIME -O 1 -P 2 -f g -l 8192 --logfile $FILE > 
 echo $TEST";8192;2;"$(awk -F"]" '/SUM.*ms / { print $2 }' $FILE | awk -F" " '{ print $5 ";" "="$9 ";" $7 ";" $3 ";" }') >> $OUT
 sleep $PAUSE
 # ----------------------------------------------------------------------------------------------
+TEST="UDP-8K-3"
+echo Testing $TEST
+FILE="$DIR$TEST.txt"
+if [ -f "$FILE" ]; then
+   rm -f $FILE
+fi
+iperf3 -c $1 -u -b 100G -V -4 -t $TIME -O 1 -P 3 -f g -l 8192 --logfile $FILE > /dev/null 2>&1
+echo $TEST";8192;3;"$(awk -F"]" '/SUM.*ms / { print $2 }' $FILE | awk -F" " '{ print $5 ";" "="$9 ";" $7 ";" $3 ";" }') >> $OUT
+sleep $PAUSE
+# ----------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------
 TEST="UDP-8K-4"
 echo Testing $TEST
 FILE="$DIR$TEST.txt"
@@ -273,6 +345,17 @@ iperf3 -c $1 -u -b 100G -V -4 -t $TIME -O 1 -P 2 -f g -l 65500 --logfile $FILE >
 echo $TEST";65500;2;"$(awk -F"]" '/SUM.*ms / { print $2 }' $FILE | awk -F" " '{ print $5 ";" "="$9 ";" $7 ";" $3 ";" }') >> $OUT
 sleep $PAUSE
 # ----------------------------------------------------------------------------------------------
+TEST="UDP-64K-3"
+echo Testing $TEST
+FILE="$DIR$TEST.txt"
+if [ -f "$FILE" ]; then
+   rm -f $FILE
+fi
+iperf3 -c $1 -u -b 100G -V -4 -t $TIME -O 1 -P 3 -f g -l 65500 --logfile $FILE > /dev/null 2>&1
+echo $TEST";65500;3;"$(awk -F"]" '/SUM.*ms / { print $2 }' $FILE | awk -F" " '{ print $5 ";" "="$9 ";" $7 ";" $3 ";" }') >> $OUT
+sleep $PAUSE
+# ----------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------
 TEST="UDP-64K-4"
 echo Testing $TEST
 FILE="$DIR$TEST.txt"
@@ -283,7 +366,3 @@ iperf3 -c $1 -u -b 100G -V -4 -t $TIME -O 1 -P 4 -f g -l 65000 --logfile $FILE >
 echo $TEST";65500;4;"$(awk -F"]" '/SUM.*ms / { print $2 }' $FILE | awk -F" " '{ print $5 ";" "="$9 ";" $7 ";" $3 ";" }') >> $OUT
 sleep $PAUSE
 # ----------------------------------------------------------------------------------------------
-
-
-echo "" >> $OUT
-echo "Date: " $(date) >> $OUT
