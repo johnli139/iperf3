@@ -1,38 +1,10 @@
 #!/bin/bash
 # -------------------------------------------------------------------------------------------
-if [[ -z $1 ]];
-then
-    echo "Missing mandatory argument: iperf3-server hostname or IP address "
-    exit 1
-fi
-# --------------------------------------------------------------------------------------------
-iperf3 -c $1 -t 2 > /dev/null
-if [ $? -ne 0 ]; then
-   echo "Iperf returned an error. Check if iperf-server is runnung and reachable!"
-   exit 1
-fi
-# --------------------------------------------------------------------------------------------
-OUT="./iperf-basic-$(ip link show eth0 | grep mtu  | awk -F" " '{ print $5 }').csv"
-if [ -f "$OUT" ]; then
-   rm -f $OUT
-fi
-DIR="./iperf-basic/"
-if [ ! -d "$DIR" ]; then
-  mkdir $DIR
-fi
 TIME=10
 PAUSE=1
 # --------------------------------------------------------------------------------------------
-echo "Date: " $(date) >> $OUT
-echo "Version: " $(iperf3 --version | grep iperf) >> $OUT
-echo "Client: " $(hostname) >> $OUT
-echo "Server: " $1 >> $OUT
-echo "" >> $OUT
 echo $(ip link show eth0 | grep mtu  | awk -F" " '{ print $4 " = " $5 }'), TCP >> $OUT
 echo "Test name;Send size;Parallel streams;Bandwidth, Gbits/sec;Retransmitted Segments, %;-;Transfer, GBytes" >> $OUT
-#
-#
-#
 # --------------------------------------------------------------------------------------------
 TEST="TCP-512-1"
 echo Testing $TEST
@@ -366,3 +338,4 @@ iperf3 -c $1 -u -b 100G -V -4 -t $TIME -O 1 -P 4 -f g -l 65000 --logfile $FILE >
 echo $TEST";65500;4;"$(awk -F"]" '/SUM.*ms / { print $2 }' $FILE | awk -F" " '{ print $5 ";" "="$9 ";" $7 ";" $3 ";" }') >> $OUT
 sleep $PAUSE
 # ----------------------------------------------------------------------------------------------
+echo "" >> $OUT
