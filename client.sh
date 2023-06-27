@@ -41,7 +41,7 @@ then
     echo "Process "$p" throughput: "$BITRATE" Gbits/s, datagram loss: "$LOSS
     SUM_BITRATE=$(echo "$SUM_BITRATE + $BITRATE" | bc)
 #    SUM_LOSS=$(echo "$SUM_LOSS + $LOSS" | bc)
-#    rm -f $FILE
+    rm -f $FILE
   done
 
   echo "---------------------------------------------------"
