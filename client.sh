@@ -32,21 +32,27 @@ then
   sleep "$((TIME+1))"
 
   SUM_BITRATE=0
-  SUM_LOSS=0
+  SUM_LOST=0
+  SUM_TOTAL=0
   for ((p=1; p<=$WORKERS; p++))
   do
     FILE=$PROTO-$SPEED-$p.log
     BITRATE=$(cat $FILE | grep " receiver" | awk -F " " '{ print $7 }')
-    LOSS=$(cat $FILE | grep " receiver" | awk -F " " '{ print $12 }')
-    echo "Process "$p" throughput: "$BITRATE" Gbits/s, datagram loss: "$LOSS
+    LOST=$(cat $FILE | grep " receiver" | awk -F " " '{ print $11 }' | awk -F"/" '{ print $1 }')
+    TOTAL=$(cat $FILE | grep " receiver" | awk -F " " '{ print $11 }' | awk -F"/" '{ print $2 }')
+    echo "Process "$p" throughput: "$BITRATE" Gbits/s, lost: "$LOST", total: "$TOTAL
     SUM_BITRATE=$(echo "$SUM_BITRATE + $BITRATE" | bc)
-#    SUM_LOSS=$(echo "$SUM_LOSS + $LOSS" | bc)
+    SUM_LOST=$(echo "$SUM_LOST + $LOST" | bc)
+    SUM_TOTAL=$(echo "$SUM_TOTAL + $TOTAL" | bc)
     rm -f $FILE
   done
 
+  PERCENT=$(echo "scale=2; $SUM_LOST / $SUM_TOTAL * 100" | bc)
   echo "---------------------------------------------------"
   echo "Sum throughput: "$SUM_BITRATE" Gbits/s"
-#  echo "Sum datagram loss: "$SUM_LOSS
+  echo "Sum lost datagrams: "$SUM_LOST
+  echo "Sum total datagrams: "$SUM_TOTAL
+  echo "% Lost datagrams: "$PERCENT
   echo "---------------------------------------------------"
 
 elif [ "$PROTO" = "TCP" ]
