@@ -47,7 +47,7 @@ then
     rm -f $FILE
   done
 
-  PERCENT=$(echo "scale=2; $SUM_LOST / $SUM_TOTAL * 100" | bc)
+  PERCENT=$(echo "scale=4; $SUM_LOST / $SUM_TOTAL * 100" | bc)
   echo "---------------------------------------------------"
   echo "Sum throughput: "$SUM_BITRATE" Gbits/s"
   echo "Sum lost datagrams: "$SUM_LOST
